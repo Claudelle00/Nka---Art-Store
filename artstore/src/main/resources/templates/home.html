@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Art Store | Original works, thoughtfully collected</title>
+    <link rel="stylesheet" th:href="@{/css/store.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/home}" aria-label="Art Store home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link active" th:href="@{/home}">Artworks</a>
+        <a class="nav-link" th:href="@{/add}">Add artwork</a>
+    </nav>
+    <button class="cart-button" type="button" disabled aria-label="Shopping cart, coming soon">
+        <span aria-hidden="true">Bag</span><span class="cart-count">0</span>
+    </button>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">A little more art in everyday life</p>
+            <h1>Find a piece<br>that feels like <em>you.</em></h1>
+            <p class="hero-description">Discover original works from artists worth knowing. Each one has a story; find the one that speaks to yours.</p>
+            <a class="button button-dark" href="#collection">Explore the collection <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+            <div class="hero-sun"></div>
+            <div class="hero-hill hero-hill-back"></div>
+            <div class="hero-hill hero-hill-front"></div>
+            <span class="hero-art-label">A study in quiet</span>
+        </div>
+        <span class="hero-index" aria-hidden="true">01 / 04</span>
+    </section>
+
+    <section class="collection section-wrap" id="collection">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">The collection</p>
+                <h2>Art to live with</h2>
+            </div>
+            <a class="text-link" th:href="@{/add}">Add an artwork <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div class="art-grid" th:if="${!#lists.isEmpty(arts)}">
+            <article class="art-card" th:each="art, itemStat : ${arts}">
+                <a class="art-image-link" th:href="@{/edit/{id}(id=${art.id})}"
+                   th:attr="aria-label=|Edit ${art.title}|">
+                    <div class="art-image image-placeholder"
+                         th:classappend="|art-tone-${itemStat.index % 4}|"
+                         data-image-slot="artwork-image">
+                        <span class="placeholder-label">Artwork image</span>
+                        <span class="image-number" th:text="|№ ${#numbers.formatInteger(itemStat.count, 2)}|">№ 01</span>
+                    </div>
+                </a>
+                <div class="art-details">
+                    <div>
+                        <p class="art-artist" th:text="${art.artistName}">Artist name</p>
+                        <h3 th:text="${art.title}">Artwork title</h3>
+                        <p class="art-year" th:text="${art.creationYear}">2024</p>
+                    </div>
+                    <p class="art-price" th:text="|€${#numbers.formatDecimal(art.price, 1, 2)}|">€0.00</p>
+                </div>
+                <div class="card-footer">
+                    <span class="availability"><span aria-hidden="true">●</span> Original artwork</span>
+                    <a class="edit-link" th:href="@{/edit/{id}(id=${art.id})}">Edit</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(arts)}">
+            <span class="empty-icon" aria-hidden="true">✳</span>
+            <h3>Your collection starts here</h3>
+            <p>Add your first artwork to see it displayed in the gallery.</p>
+            <a class="button button-dark" th:href="@{/add}">Add an artwork</a>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" th:href="@{/home}">
+        <span class="brand-mark" aria-hidden="true">A</span><span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <p>Good art makes a place feel like yours.</p>
+    <span>© 2026 Atelier Art Store</span>
+</footer>
+</body>
+</html>
