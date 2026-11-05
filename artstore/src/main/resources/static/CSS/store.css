@@ -193,7 +193,10 @@ h1 em, h2 em { color: var(--accent); font-weight: 400; }
 .form-actions { margin-top: 23px; display: flex; align-items: center; gap: 18px; }
 .form-actions .button { min-width: 145px; }
 .cancel-link { color: var(--muted); font-size: 10px; }
-
+.button-danger{ color:#FF0000 ; font-size: 10px; }
+.form-actions .button-danger {
+    margin-left: auto;
+}
 .site-footer { min-height: 85px; padding: 22px 7.2%; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); }
 .footer-brand { font-size: 18px; }
 .footer-brand .brand-mark { width: 25px; height: 25px; font-size: 14px; }

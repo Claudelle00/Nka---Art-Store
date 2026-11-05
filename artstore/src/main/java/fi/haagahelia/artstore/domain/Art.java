@@ -37,6 +37,7 @@ public class Art {
         this.price = price;
     }
 
+    //Art ID
      public Long getId(){
         return id;
     }
@@ -76,6 +77,7 @@ public class Art {
         this.price = price;
     }
 
+    //Series
     public Series getSeries(){
         return series;
     }

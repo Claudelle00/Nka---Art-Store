@@ -25,7 +25,8 @@ public Iterable<Art> findAllAll(){
     return artRepository.findAll();
 }
 
-@GetMapping("/books/{id}")
+//Fetching of art by ID
+@GetMapping("/art/{id}")
 public Optional<Art> findById(@PathVariable("id") Long artId){
     return artRepository.findById(artId);
 }

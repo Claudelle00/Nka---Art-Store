@@ -25,6 +25,7 @@ public class Series {
         this.name = name;
     }
 
+    //Series ID
     public Long getId() {
         return id;
     }
@@ -33,6 +34,7 @@ public class Series {
         this.id = id;
     }
 
+    //Series Name
     public String getName() {
         return name;
     }
@@ -41,6 +43,7 @@ public class Series {
         this.name = name;
     }
 
+    //Art fetching and setting to list 
     public List<Art> getArts(){
         return arts;
     }

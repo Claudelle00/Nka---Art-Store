@@ -64,7 +64,14 @@
             <div class="form-actions">
                 <button class="button button-dark" type="submit">Save changes <span aria-hidden="true">→</span></button>
                 <a class="cancel-link" th:href="@{/home}">Cancel</a>
+                <a class="button button-danger" type="submit"
+                    th:formaction="@{/delete/{id}(id=${art.id})}"
+                    formmethod="post"
+                    onclick="return confirm('Delete this artwork? This cannot be undone.');">
+                    Delete artwork
+            </a>
             </div>
+            
         </form>
     </section>
 </main>
