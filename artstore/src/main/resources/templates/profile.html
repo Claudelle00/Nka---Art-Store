@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your profile | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<main class="form-page">
+    <a class="back-link" th:href="@{/home}"><span aria-hidden="true">←</span> Back to the store</a>
+
+    <div class="form-layout">
+        <section class="form-intro">
+            <p class="eyebrow">Your account</p>
+            <h1>Your <em>profile.</em></h1>
+            <p>Account details for your Atelier Art Store account.</p>
+        </section>
+
+        <section class="art-form" aria-labelledby="profile-heading">
+            <div class="form-heading">
+                <p class="eyebrow">Profile</p>
+                <h2 id="profile-heading">Account details</h2>
+            </div>
+            <p><strong>Username:</strong> <span th:text="${username}">username</span></p>
+            <p><strong>Role:</strong> <span th:text="${role}">USER</span></p>
+            <div class="form-actions">
+                <a class="button button-dark" th:href="@{/home}">Back to store</a>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

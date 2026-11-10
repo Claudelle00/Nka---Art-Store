@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Add an artwork | Atelier</title>
-    <link rel="stylesheet" th:href="@{/css/store.css}">
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
 </head>
 <body>
 <header class="site-header">
@@ -27,12 +27,12 @@
         <div class="form-intro">
             <p class="eyebrow">The collection</p>
             <h1>Make room<br>for <em>something</em><br>beautiful.</h1>
-            <p>Add the details of an artwork. You can add an image once image uploads are supported.</p>
+            <p>Add the artwork details and choose an image to include in the collection.</p>
             <div class="form-art-placeholder" aria-hidden="true">
                 <span>YOUR NEXT<br>FAVORITE PIECE</span>
             </div>
         </div>
-        <form class="art-form" th:action="@{/save}" th:object="${art}" method="post">
+        <form class="art-form" th:action="@{/save}" th:object="${art}" method="post" enctype="multipart/form-data">
             <div class="form-heading">
                 <p class="eyebrow">Artwork details</p>
                 <h2>Tell us about the piece</h2>
@@ -54,10 +54,13 @@
                 </div>
             </div>
 
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}" rows="5" placeholder="Describe the artwork"></textarea>
+
             <div class="image-upload-placeholder">
                 <span class="upload-icon" aria-hidden="true">＋</span>
-                <span><strong>Artwork image</strong><small>Image uploads can be added here later</small></span>
-                <span class="future-tag">Coming soon</span>
+                <span class="upload-copy"><strong>Artwork image</strong><small>JPEG, PNG, GIF, or WebP</small></span>
+                <input class="file-input" id="file" name="file" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
             </div>
 
             <div class="form-actions">

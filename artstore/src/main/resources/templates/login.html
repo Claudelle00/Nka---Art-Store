@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<main class="form-page">
+    <a class="back-link" th:href="@{/home}"><span aria-hidden="true">←</span> Back to the store</a>
+
+    <div class="form-layout">
+        <section class="form-intro">
+            <p class="eyebrow">Welcome back</p>
+            <h1>Good to see <em>you.</em></h1>
+            <p>Log in to manage artwork in the Atelier Art Store.</p>
+            <div class="form-art-placeholder">
+                <span>Art makes a place<br>feel like yours</span>
+            </div>
+        </section>
+
+        <form class="art-form" th:action="@{/login}" method="post">
+            <div class="form-heading">
+                <p class="eyebrow">Your account</p>
+                <h2>Log in</h2>
+            </div>
+
+            <p th:if="${param.error}" role="alert">The username or password was incorrect. Please try again.</p>
+            <p th:if="${param.logout}">You have been logged out.</p>
+
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+            <div class="form-actions">
+                <button class="button button-dark" type="submit">Log in</button>
+                <a class="cancel-link" th:href="@{/signup}">Create an account</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

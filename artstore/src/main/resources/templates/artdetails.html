@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="|${art.title} - Atelier Art Store|">Artwork | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/home}" aria-label="Art Store home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link" th:href="@{/home}">Artworks</a>
+        <a class="nav-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit artwork</a>
+    </nav>
+    <div class="header-actions">
+        <a class="header-login" th:if="${!isAuthenticated}" th:href="@{/login}">Log In/Sign Up</a>
+        <details class="user-menu" th:if="${isAuthenticated}">
+            <summary class="user-menu-trigger" aria-label="Open account menu" title="Account">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.5"></circle>
+                    <path d="M5 20c.5-3.5 3.2-5.5 7-5.5s6.5 2 7 5.5"></path>
+                </svg>
+            </summary>
+            <div class="user-menu-dropdown">
+                <a th:href="@{/profile}">Profile</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+        </details>
+    </div>
+</header>
+
+<main class="art-detail-page">
+    <a class="back-link" th:href="@{/home}"><span aria-hidden="true">←</span> Back to the collection</a>
+    <article class="art-detail-layout">
+        <div class="art-detail-image">
+            <img th:if="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}"
+                 th:src="@{${art.imagePath}}" th:alt="|${art.title} by ${art.artistName}|">
+            <div class="art-detail-placeholder"
+                 th:unless="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}">
+                <span>Artwork image</span>
+            </div>
+        </div>
+        <section class="art-detail-copy">
+            <p class="eyebrow">The collection</p>
+            <h1 th:text="${art.title}">Artwork title</h1>
+            <p class="art-detail-artist" th:text="${art.artistName}">Artist name</p>
+            <p class="art-detail-meta">
+                <span th:text="${art.creationYear}">2024</span>
+                <span aria-hidden="true">·</span>
+                <span th:text="|€${#numbers.formatDecimal(art.price, 1, 2)}|">€0.00</span>
+            </p>
+            <div class="art-detail-description"
+                 th:if="${art.description != null and !#strings.isEmpty(art.description)}">
+                <h2>About this artwork</h2>
+                <p th:text="${art.description}">Artwork description</p>
+            </div>
+            <div class="art-detail-actions">
+                <a class="button button-dark art-detail-back" th:href="@{/home}">Back to the collection</a>
+                <a class="text-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit artwork</a>
+            </div>
+        </section>
+    </article>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" th:href="@{/home}">
+        <span class="brand-mark" aria-hidden="true">A</span><span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <p>Good art makes a place feel like yours.</p>
+    <span>© 2026 Atelier Art Store</span>
+</footer>
+</body>
+</html>

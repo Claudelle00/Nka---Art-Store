@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit artwork | Atelier</title>
-    <link rel="stylesheet" th:href="@{/css/store.css}">
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
 </head>
 <body>
 <header class="site-header">
@@ -27,12 +27,12 @@
         <div class="form-intro">
             <p class="eyebrow">The collection</p>
             <h1>Every detail<br>makes it <em>yours.</em></h1>
-            <p>Update the details of this artwork. Image uploads can be added here in the future.</p>
+            <p>Update the artwork details and replace its image if you wish.</p>
             <div class="form-art-placeholder" aria-hidden="true">
                 <span>YOUR NEXT<br>FAVORITE PIECE</span>
             </div>
         </div>
-        <form class="art-form" th:action="@{/save}" th:object="${art}" method="post">
+        <form class="art-form" th:action="@{/save}" th:object="${art}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}">
             <div class="form-heading">
                 <p class="eyebrow">Artwork details</p>
@@ -55,21 +55,35 @@
                 </div>
             </div>
 
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}" rows="5" placeholder="Describe the artwork"></textarea>
+
             <div class="image-upload-placeholder">
                 <span class="upload-icon" aria-hidden="true">＋</span>
-                <span><strong>Artwork image</strong><small>Image uploads can be added here later</small></span>
-                <span class="future-tag">Coming soon</span>
+                <span class="upload-copy"><strong>Artwork image</strong><small>JPEG, PNG, GIF, or WebP</small></span>
+                <input class="file-input" id="file" name="file" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+            </div>
+            <div class="current-image" th:if="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}">
+                <p class="eyebrow">Current image</p>
+                <img class="current-art-image" th:src="@{${art.imagePath}}" th:alt="|Current image for ${art.title}|">
+                <button class="button button-danger" type="submit"
+                        th:formaction="@{/delete/{id}/image(id=${art.id})}"
+                        formmethod="post"
+                        formnovalidate
+                        onclick="return confirm('Remove this image from the artwork?');">
+                    Remove image
+                </button>
             </div>
 
             <div class="form-actions">
                 <button class="button button-dark" type="submit">Save changes <span aria-hidden="true">→</span></button>
                 <a class="cancel-link" th:href="@{/home}">Cancel</a>
-                <a class="button button-danger" type="submit"
+                <button class="button button-danger" type="submit"
                     th:formaction="@{/delete/{id}(id=${art.id})}"
                     formmethod="post"
                     onclick="return confirm('Delete this artwork? This cannot be undone.');">
                     Delete artwork
-            </a>
+            </button>
             </div>
             
         </form>

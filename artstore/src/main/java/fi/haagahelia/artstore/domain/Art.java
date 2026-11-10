@@ -21,20 +21,24 @@ public class Art {
     private String artistName;
     private int creationYear;
     private double price;
+    private String description;
 
     @JsonIgnoreProperties ("arts")
     @ManyToOne
     @JoinColumn(name = "seriesid")
+
     private Series series;
+    private String imagePath;
 
     public Art(){};
 
-    public Art(String title, String artistName, int creationYear,double price){
+    public Art(String title, String artistName, int creationYear,double price, String description){
 
         this.title = title;
         this.artistName = artistName;
         this.creationYear = creationYear;
         this.price = price;
+        this.description = description;
     }
 
     //Art ID
@@ -77,12 +81,28 @@ public class Art {
         this.price = price;
     }
 
+    //Description
+    public String getDescription(){
+        return description;
+    }
+    public void setDescription(String description){
+        this.description = description;
+    }
+
     //Series
     public Series getSeries(){
         return series;
     }
     public void setSeries(Series series){
         this.series = series;
+    }
+    //Images
+    public String getImagePath(){
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath){
+        this.imagePath = imagePath;
     }
 
 

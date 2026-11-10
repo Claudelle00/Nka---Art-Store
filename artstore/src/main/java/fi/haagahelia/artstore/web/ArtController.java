@@ -3,6 +3,8 @@ package fi.haagahelia.artstore.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,14 @@ import fi.haagahelia.artstore.domain.SeriesRepository;
 import fi.haagahelia.artstore.domain.ArtRepository;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class ArtController {
@@ -27,9 +37,15 @@ private SeriesRepository seriesRepository;
 
 //Main page home mapping
 @GetMapping({"/", "/home"})
-public String home(Model model) {
-    List<Art> arts = (List<Art>) artRepository.findAll();
+public String home(Model model, Authentication authentication) {
+    List<Art> arts = artRepository.findAllByOrderByIdAsc();
     model.addAttribute("arts",arts);
+    boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
+            && !(authentication instanceof AnonymousAuthenticationToken);
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
+    model.addAttribute("isAdmin", isAdmin);
     return "home";
 }
 
@@ -41,19 +57,91 @@ public String home(Model model) {
         return "addart";
     }
 
+@GetMapping("/art/{id}")
+public String artworkDetails(
+        @PathVariable("id") Long artId,
+        Model model,
+        Authentication authentication) {
+    Art art = artRepository.findById(artId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    model.addAttribute("art", art);
+    boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
+            && !(authentication instanceof AnonymousAuthenticationToken);
+    model.addAttribute("isAuthenticated", isAuthenticated);
+    boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
+    model.addAttribute("isAdmin", isAdmin);
+    return "artdetails";
+}
+
 
 //Saving of added art 
-    @PostMapping("/save")
-    public String save(Art art) {
-        artRepository.save(art);
-        return "redirect:/home";
+   @PostMapping("/save")
+public String save(
+        Art submittedArt,
+        @RequestParam(name = "file", required = false) MultipartFile file) throws IOException {
+
+    Art art = submittedArt;
+
+    if (submittedArt.getId() != null) {
+        art = artRepository.findById(submittedArt.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        art.setTitle(submittedArt.getTitle());
+        art.setArtistName(submittedArt.getArtistName());
+        art.setCreationYear(submittedArt.getCreationYear());
+        art.setPrice(submittedArt.getPrice());
+        art.setDescription(submittedArt.getDescription());
+        art.setSeries(submittedArt.getSeries());
     }
+
+    if (file != null && !file.isEmpty()) {
+        String extension = switch (file.getContentType() == null ? "" : file.getContentType()) {
+            case "image/jpeg" -> ".jpg";
+            case "image/png" -> ".png";
+            case "image/gif" -> ".gif";
+            case "image/webp" -> ".webp";
+            default -> throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Upload a JPEG, PNG, GIF, or WebP image");
+        };
+
+        Path uploadDirectory = Path.of("uploads").toAbsolutePath().normalize();
+        Files.createDirectories(uploadDirectory);
+
+        String filename = UUID.randomUUID() + extension;
+        Files.copy(file.getInputStream(), uploadDirectory.resolve(filename));
+        art.setImagePath("/uploads/" + filename);
+    }
+
+    artRepository.save(art);
+    return "redirect:/home";
+}
 
 //Deleting of art piece
     @PostMapping("/delete/{id}")
     public String deleteArtwork(@PathVariable("id") Long artId, Model model) {
         artRepository.deleteById(artId);
         return "redirect:../home";
+    }
+
+    @PostMapping("/delete/{id}/image")
+    public String deleteArtworkImage(@PathVariable("id") Long artId) throws IOException {
+        Art art = artRepository.findById(artId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String imagePath = art.getImagePath();
+
+        if (imagePath != null && imagePath.startsWith("/uploads/")) {
+            Path uploadDirectory = Path.of("uploads").toAbsolutePath().normalize();
+            Path imageFile = uploadDirectory.resolve(imagePath.substring("/uploads/".length())).normalize();
+            if (!imageFile.startsWith(uploadDirectory)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid stored image path");
+            }
+            Files.deleteIfExists(imageFile);
+        }
+
+        art.setImagePath(null);
+        artRepository.save(art);
+        return "redirect:/edit/" + artId;
     }
 
 //Editing of art
@@ -68,6 +156,3 @@ public String home(Model model) {
     return "editart";
 }
 }
-
-
-

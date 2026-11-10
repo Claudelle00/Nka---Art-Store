@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create an account | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<main class="form-page">
+    <a class="back-link" th:href="@{/home}"><span aria-hidden="true">←</span> Back to the store</a>
+
+    <div class="form-layout">
+        <section class="form-intro">
+            <p class="eyebrow">Join our community</p>
+            <h1>Create your <em>account.</em></h1>
+            <p>Sign up to become part of the Atelier Art Store community.</p>
+            <div class="form-art-placeholder">
+                <span>Art makes a place<br>feel like yours</span>
+            </div>
+        </section>
+
+        <form class="art-form" th:action="@{/saveuser}" th:object="${signupform}" method="post">
+            <div class="form-heading">
+                <p class="eyebrow">Get started</p>
+                <h2>Sign up</h2>
+            </div>
+
+            <label for="username">Username</label>
+            <input id="username" type="text" th:field="*{username}" required>
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+
+            <label for="password">Password</label>
+            <input id="password" type="password" th:field="*{password}" required>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+
+            <label for="passwordCheck">Confirm password</label>
+            <input id="passwordCheck" type="password" th:field="*{passwordCheck}" required>
+            <span th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}"></span>
+
+            <input type="hidden" th:field="*{role}">
+
+            <div class="form-actions">
+                <button class="button button-dark" type="submit">Create account</button>
+                <a class="cancel-link" th:href="@{/home}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
