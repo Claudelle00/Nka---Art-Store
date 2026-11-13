@@ -3,6 +3,7 @@ package fi.haagahelia.artstore.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -38,10 +39,28 @@ private SeriesRepository seriesRepository;
 
 //Main page home mapping
 @GetMapping({"/", "/home"})
-public String home(Model model, Authentication authentication, HttpSession session) {
-    List<Art> arts = artRepository.findAllByOrderByIdAsc();
+public String home(
+        @RequestParam(name = "sortBy", defaultValue = "default") String sortBy,
+        Model model,
+        Authentication authentication,
+        HttpSession session) {
+    Sort sort = switch (sortBy) {
+        case "year-oldest" -> Sort.by("creationYear").ascending();
+        case "year-newest" -> Sort.by("creationYear").descending();
+        case "title-asc" -> Sort.by("title").ascending();
+        case "title-desc" -> Sort.by("title").descending();
+        case "artist-asc" -> Sort.by("artistName").ascending();
+        case "artist-desc" -> Sort.by("artistName").descending();
+        case "price-asc" -> Sort.by("price").ascending();
+        case "price-desc" -> Sort.by("price").descending();
+        default -> Sort.by("id").ascending();
+    };
+    List<Art> arts = artRepository.findAll(sort);
+
     model.addAttribute("arts",arts);
+    model.addAttribute("sortBy", sortBy);
     model.addAttribute("cartCount", cartCount(session));
+    
     boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
             && !(authentication instanceof AnonymousAuthenticationToken);
     model.addAttribute("isAuthenticated", isAuthenticated);

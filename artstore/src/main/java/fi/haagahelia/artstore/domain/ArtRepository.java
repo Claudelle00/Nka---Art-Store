@@ -1,10 +1,8 @@
 package fi.haagahelia.artstore.domain;
 
-import org.springframework.data.repository.CrudRepository;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ArtRepository extends CrudRepository<Art,Long> {
-
+public interface ArtRepository extends JpaRepository<Art, Long> {
     List<Art> findAllByOrderByIdAsc();
-
 }

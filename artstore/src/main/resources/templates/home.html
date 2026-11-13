@@ -64,6 +64,23 @@
             <a class="text-link" th:if="${isAdmin}" th:href="@{/add}">Add an artwork <span aria-hidden="true">↗</span></a>
         </div>
 
+        <form class="collection-filters" th:action="@{/home#collection}" method="get">
+            <label for="sortBy">Sort artworks</label>
+            <select id="sortBy" name="sortBy">
+                <option value="default" th:selected="${sortBy == 'default'}">Featured order</option>
+                <option value="year-newest" th:selected="${sortBy == 'year-newest'}">Year: newest first</option>
+                <option value="year-oldest" th:selected="${sortBy == 'year-oldest'}">Year: oldest first</option>
+                <option value="title-asc" th:selected="${sortBy == 'title-asc'}">Title: A–Z</option>
+                <option value="title-desc" th:selected="${sortBy == 'title-desc'}">Title: Z–A</option>
+                <option value="artist-asc" th:selected="${sortBy == 'artist-asc'}">Artist: A–Z</option>
+                <option value="artist-desc" th:selected="${sortBy == 'artist-desc'}">Artist: Z–A</option>
+                <option value="price-asc" th:selected="${sortBy == 'price-asc'}">Price: low to high</option>
+                <option value="price-desc" th:selected="${sortBy == 'price-desc'}">Price: high to low</option>
+            </select>
+            <button class="button button-dark" type="submit">Apply</button>
+            <a class="text-link" th:href="@{/home}">Clear</a>
+        </form>
+
         <div class="art-grid" th:if="${!#lists.isEmpty(arts)}">
             <article class="art-card" th:each="art, itemStat : ${arts}">
                 <a class="art-image-link" th:href="@{/art/{id}(id=${art.id})}"
