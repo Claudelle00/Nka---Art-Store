@@ -17,9 +17,9 @@
         <a class="nav-link" th:if="${isAdmin}" th:href="@{/add}">Add artwork</a>
     </nav>
     <div class="header-actions">
-        <button class="cart-button" type="button" disabled aria-label="Shopping cart, coming soon">
-            <span aria-hidden="true">Bag</span><span class="cart-count">0</span>
-        </button>
+        <a class="cart-button" th:href="@{/cart}" aria-label="Shopping cart">
+            <span aria-hidden="true">Bag</span><span class="cart-count" th:text="${cartCount}">0</span>
+        </a>
         <a class="header-login" th:if="${!isAuthenticated}" th:href="@{/login}">Log In/Sign Up</a>
         <details class="user-menu" th:if="${isAuthenticated}">
             <summary class="user-menu-trigger" aria-label="Open account menu" title="Account">
@@ -86,7 +86,13 @@
                 </div>
                 <div class="card-footer">
                     <span class="availability"><span aria-hidden="true">●</span> Original artwork</span>
-                    <a class="edit-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit</a>
+                    <div class="card-actions">
+                        <a class="edit-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit</a>
+                        <form class="card-cart-form" th:unless="${isAdmin}" th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="artId" th:value="${art.id}">
+                            <button class="button button-dark" type="submit">Add to cart</button>
+                        </form>
+                    </div>
                 </div>
             </article>
         </div>

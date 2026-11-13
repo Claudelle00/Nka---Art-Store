@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo order confirmed | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/home}" aria-label="Art Store home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link" th:href="@{/home}">Artworks</a>
+    </nav>
+</header>
+
+<main class="cart-page">
+    <section class="order-confirmation">
+        <span class="empty-icon" aria-hidden="true">✓</span>
+        <p class="eyebrow">Demo order placed</p>
+        <h1>Thank you!</h1>
+        <p class="demo-checkout-banner">This was a simulated purchase. No payment was taken.</p>
+        <p class="order-reference">Order reference: <strong th:text="|#${order.id}|">#1</strong></p>
+
+        <div class="confirmation-items">
+            <article class="confirmation-item" th:each="item : ${order.items}">
+                <div>
+                    <h2 th:text="${item.artworkTitle}">Artwork title</h2>
+                    <p th:text="${item.artistName}">Artist name</p>
+                </div>
+                <p th:text="|${item.quantity} × €${#numbers.formatDecimal(item.unitPrice, 1, 2)}|">1 × €0.00</p>
+            </article>
+        </div>
+
+        <p class="confirmation-total">
+            Demo total:
+            <strong th:text="|€${#numbers.formatDecimal(order.total, 1, 2)}|">€0.00</strong>
+        </p>
+        <a class="button button-dark" th:href="@{/home}">Return to the collection</a>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" th:href="@{/home}">
+        <span class="brand-mark" aria-hidden="true">A</span><span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <p>Good art makes a place feel like yours.</p>
+    <span>© 2026 Atelier Art Store</span>
+</footer>
+</body>
+</html>

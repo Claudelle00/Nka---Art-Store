@@ -20,12 +20,16 @@ public class SecurityConfig {
                 .requestMatchers("/profile").authenticated()
                 .requestMatchers("/add", "/save", "/edit/**", "/delete/**")
                     .hasAuthority("ADMIN")
+                .requestMatchers("/cart", "/cart/remove", "/cart/add").permitAll()
+                .requestMatchers("/checkout/**").permitAll()
                 .anyRequest().permitAll()
+
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .permitAll())
             .logout(logout -> logout
+                .invalidateHttpSession(false)
                 .logoutSuccessUrl("/home")
                 .permitAll());
 

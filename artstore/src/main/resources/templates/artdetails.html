@@ -17,6 +17,9 @@
         <a class="nav-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit artwork</a>
     </nav>
     <div class="header-actions">
+        <a class="cart-button" th:href="@{/cart}" aria-label="Shopping cart">
+            <span aria-hidden="true">Bag</span><span class="cart-count" th:text="${cartCount}">0</span>
+        </a>
         <a class="header-login" th:if="${!isAuthenticated}" th:href="@{/login}">Log In/Sign Up</a>
         <details class="user-menu" th:if="${isAuthenticated}">
             <summary class="user-menu-trigger" aria-label="Open account menu" title="Account">
@@ -61,7 +64,11 @@
                 <p th:text="${art.description}">Artwork description</p>
             </div>
             <div class="art-detail-actions">
-                <a class="button button-dark art-detail-back" th:href="@{/home}">Back to the collection</a>
+                <form class="detail-cart-form" th:unless="${isAdmin}" th:action="@{/cart/add}" method="post">
+                    <input type="hidden" name="artId" th:value="${art.id}">
+                    <button class="button button-dark" type="submit">Add to cart</button>
+                </form>
+                
                 <a class="text-link" th:if="${isAdmin}" th:href="@{/edit/{id}(id=${art.id})}">Edit artwork</a>
             </div>
         </section>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your cart | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/home}" aria-label="Art Store home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link" th:href="@{/home}">Artworks</a>
+    </nav>
+    <div class="header-actions">
+        <a class="cart-button active" th:href="@{/cart}" aria-label="Shopping cart">
+            <span aria-hidden="true">Bag</span><span class="cart-count" th:text="${cartCount}">0</span>
+        </a>
+    </div>
+</header>
+
+<main class="cart-page">
+    <a class="back-link" th:href="@{/home}"><span aria-hidden="true">←</span> Back to the collection</a>
+    <div class="cart-heading">
+        <div>
+            <p class="eyebrow">Your selection</p>
+            <h1>Your cart</h1>
+        </div>
+        <span class="cart-item-count" th:text="|${cartCount} items|">0 items</span>
+    </div>
+
+    <section class="empty-state" th:if="${#lists.isEmpty(arts)}">
+        <span class="empty-icon" aria-hidden="true">✳</span>
+        <h2>Your cart is empty</h2>
+        <p>Find a piece for your collection and add it here.</p>
+        <a class="button button-dark" th:href="@{/home}">Explore artworks</a>
+    </section>
+
+    <section class="cart-content" th:unless="${#lists.isEmpty(arts)}">
+        <div class="cart-items">
+            <article class="cart-item" th:each="art : ${arts}">
+                <a class="cart-item-image" th:href="@{/art/{id}(id=${art.id})}">
+                    <img th:if="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}"
+                         th:src="@{${art.imagePath}}" th:alt="|${art.title} by ${art.artistName}|">
+                    <span th:unless="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}">Artwork</span>
+                </a>
+                <div class="cart-item-info">
+                    <p class="art-artist" th:text="${art.artistName}">Artist</p>
+                    <h2><a th:href="@{/art/{id}(id=${art.id})}" th:text="${art.title}">Artwork title</a></h2>
+                    <p class="art-year" th:text="${art.creationYear}">2024</p>
+                    <form th:action="@{/cart/remove}" method="post">
+                        <input type="hidden" name="artId" th:value="${art.id}">
+                        <button class="cart-remove-button" type="submit">Remove</button>
+                    </form>
+                </div>
+                <p class="cart-item-price" th:text="|€${#numbers.formatDecimal(art.price, 1, 2)}|">€0.00</p>
+            </article>
+        </div>
+
+        <aside class="cart-summary">
+            <p class="eyebrow">Order summary</p>
+            <div class="cart-total-row">
+                <span>Total</span>
+                <strong th:text="|€${#numbers.formatDecimal(total, 1, 2)}|">€0.00</strong>
+            </div>
+            <p class="demo-checkout-note">Simulated checkout only — no payment is taken.</p>
+            <a class="button button-dark checkout-button" th:href="@{/checkout}">Review demo order</a>
+        </aside>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" th:href="@{/home}">
+        <span class="brand-mark" aria-hidden="true">A</span><span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <p>Good art makes a place feel like yours.</p>
+    <span>© 2026 Atelier Art Store</span>
+</footer>
+</body>
+</html>

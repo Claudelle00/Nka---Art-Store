@@ -25,6 +25,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ArtController {
@@ -37,9 +38,10 @@ private SeriesRepository seriesRepository;
 
 //Main page home mapping
 @GetMapping({"/", "/home"})
-public String home(Model model, Authentication authentication) {
+public String home(Model model, Authentication authentication, HttpSession session) {
     List<Art> arts = artRepository.findAllByOrderByIdAsc();
     model.addAttribute("arts",arts);
+    model.addAttribute("cartCount", cartCount(session));
     boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
             && !(authentication instanceof AnonymousAuthenticationToken);
     model.addAttribute("isAuthenticated", isAuthenticated);
@@ -61,10 +63,12 @@ public String home(Model model, Authentication authentication) {
 public String artworkDetails(
         @PathVariable("id") Long artId,
         Model model,
-        Authentication authentication) {
+        Authentication authentication,
+        HttpSession session) {
     Art art = artRepository.findById(artId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     model.addAttribute("art", art);
+    model.addAttribute("cartCount", cartCount(session));
     boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
             && !(authentication instanceof AnonymousAuthenticationToken);
     model.addAttribute("isAuthenticated", isAuthenticated);
@@ -72,6 +76,14 @@ public String artworkDetails(
             .anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
     model.addAttribute("isAdmin", isAdmin);
     return "artdetails";
+}
+
+private int cartCount(HttpSession session) {
+    Object cart = session.getAttribute("cart");
+    if (cart instanceof java.util.Set<?> cartItems) {
+        return cartItems.size();
+    }
+    return 0;
 }
 
 
@@ -123,7 +135,7 @@ public String save(
         artRepository.deleteById(artId);
         return "redirect:../home";
     }
-
+//Deleting of art image
     @PostMapping("/delete/{id}/image")
     public String deleteArtworkImage(@PathVariable("id") Long artId) throws IOException {
         Art art = artRepository.findById(artId)

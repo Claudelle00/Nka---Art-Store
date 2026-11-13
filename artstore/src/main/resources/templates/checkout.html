@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Review demo order | Atelier Art Store</title>
+    <link rel="stylesheet" th:href="@{/CSS/store.css}">
+</head>
+<body>
+<header class="site-header">
+    <a class="brand" th:href="@{/home}" aria-label="Art Store home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link" th:href="@{/home}">Artworks</a>
+    </nav>
+    <div class="header-actions">
+        <a class="cart-button" th:href="@{/cart}" aria-label="Shopping cart">
+            <span aria-hidden="true">Bag</span><span class="cart-count" th:text="${cartCount}">0</span>
+        </a>
+    </div>
+</header>
+
+<main class="cart-page">
+    <a class="back-link" th:href="@{/cart}"><span aria-hidden="true">←</span> Back to your cart</a>
+    <div class="cart-heading">
+        <div>
+            <p class="eyebrow">Final step</p>
+            <h1>Review your order</h1>
+        </div>
+    </div>
+
+    <p class="demo-checkout-banner" role="note">
+        This is a simulated checkout. No payment will be collected and no real purchase will be made.
+    </p>
+
+    <section class="cart-content">
+        <div class="cart-items">
+            <article class="cart-item" th:each="art : ${arts}">
+                <a class="cart-item-image" th:href="@{/art/{id}(id=${art.id})}">
+                    <img th:if="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}"
+                         th:src="@{${art.imagePath}}" th:alt="|${art.title} by ${art.artistName}|">
+                    <span th:unless="${art.imagePath != null and !#strings.isEmpty(art.imagePath)}">Artwork</span>
+                </a>
+                <div class="cart-item-info">
+                    <p class="art-artist" th:text="${art.artistName}">Artist</p>
+                    <h2 th:text="${art.title}">Artwork title</h2>
+                    <p class="art-year" th:text="${art.creationYear}">2024</p>
+                </div>
+                <p class="cart-item-price" th:text="|€${#numbers.formatDecimal(art.price, 1, 2)}|">€0.00</p>
+            </article>
+        </div>
+
+        <aside class="cart-summary">
+            <p class="eyebrow">Demo order summary</p>
+            <div class="cart-total-row">
+                <span th:text="|Items (${cartCount})|">Items</span>
+                <strong th:text="|€${#numbers.formatDecimal(total, 1, 2)}|">€0.00</strong>
+            </div>
+            <p class="demo-checkout-note">No card details are needed. This only records a demo order in the project.</p>
+            <form th:action="@{/checkout/place}" method="post">
+                <button class="button button-dark checkout-button" type="submit">Place demo order</button>
+            </form>
+        </aside>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" th:href="@{/home}">
+        <span class="brand-mark" aria-hidden="true">A</span><span>atelier<span class="brand-dot">.</span></span>
+    </a>
+    <p>Good art makes a place feel like yours.</p>
+    <span>© 2026 Atelier Art Store</span>
+</footer>
+</body>
+</html>
